@@ -7,16 +7,17 @@ import {useState} from "react";
 const Form = props => {
 
     const {addTodo} = props;
-    const [todo, setTodo] = useState();
-    const onAddTodo = () => {
-      addTodo(todo);
-      setTodo({
-          body:todo,
-          user:{
-              username:"Nurs",
-              email:"nurstunguch@gmail.com"
-          }
-      })
+    const [todo, setTodo] = useState('');
+    const onAddTodo = (e) => {
+        e.preventDefault();
+        addTodo({
+            body: todo,
+            user: {
+                username: "Nurs",
+                email: "nurstunguch@gmail.com"
+            }
+        });
+        setTodo('')
     }
 
     return <Appear id="launch" animate show={props.entered}>

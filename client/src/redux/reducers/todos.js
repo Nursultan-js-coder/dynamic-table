@@ -23,7 +23,7 @@ const todos = [
 ]
 
 const initialState = {
-  allIds: todos,
+  all: todos,
   byIds: {}
 };
 
@@ -33,7 +33,7 @@ export default function(state = initialState, action) {
       const {todo} = action.payload;
       return {
         ...state,
-        allIds: [...state.allIds, todo.id],
+        all: [...state.all, {...todo,completed: false}],
         byIds: {
           ...state.byIds,
           [todo.id]: {

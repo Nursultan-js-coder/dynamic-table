@@ -3,3 +3,9 @@ export const VISIBILITY_FILTERS = {
   COMPLETED: "completed",
   INCOMPLETE: "incomplete"
 };
+
+export const VISIBILITY_SORT = {
+  USERNAME:"username",
+  EMAIL:"email",
+  STATUS:"status"
+}

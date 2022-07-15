@@ -1,14 +1,7 @@
-import { useMemo } from "react";
-import { connect } from "react-redux";
-import { getTodosByVisibilityFilter } from "../redux/selectors";
-import {
-    withStyles,
-    Appear,
-    Link,
-    Paragraph,
-    Table,
-    Words,
-} from "arwes";
+import {useMemo} from "react";
+import {connect} from "react-redux";
+import {getTodosByVisibilityFilter} from "../redux/selectors";
+import {Appear, Link, Table, withStyles,} from "arwes";
 
 import Clickable from "./Clickable";
 
@@ -26,13 +19,12 @@ const TodoList = props => {
         classes,
         toggleTodo,
     } = props;
-    debugger;
     const tableBody = useMemo(() => {
         return todos
-            .map((todo,index) => {
+            .map((todo, index) => {
                 return <tr key={String(todo.id)}>
                     <td>
-                        <Clickable style={{color:"red"}}>
+                        <Clickable style={{color: "red"}}>
                             <Link className={classes.link} onClick={() => toggleTodo(todo)}>
                                 ✖
                             </Link>
@@ -67,9 +59,9 @@ const TodoList = props => {
 }
 
 const mapStateToProps = state => {
-    const { visibilityFilter } = state;
+    const {visibilityFilter} = state;
     const todos = getTodosByVisibilityFilter(state, visibilityFilter);
-    return { todos };
+    return {todos};
 };
 
 export default connect(mapStateToProps)(withStyles(styles)(TodoList));

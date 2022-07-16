@@ -1,62 +1,49 @@
-import { ADD_TODO, TOGGLE_TODO } from "../actionTypes";
+import {ADD_TODO, DELETE_TODO, LOAD_TODOS, TOGGLE_TODO} from "../actionTypes";
 
-const todos = [
-  {
-    id:0,
-    user: {
-      username: "nursultan00",
-      email: "nurstunguch@gmail.com",
-    },
-    body: "Buy milk",
-    completed: true
-  },
-  {
-    id:1,
-    user: {
-      username: "aida93",
-      email: "aida@gmail.com",
-    },
-    body: "Buy meat",
-    completed: false
-  },
-
-]
+const todos = []
 
 const initialState = {
-  all: todos,
-  byIds: {}
+    all: todos,
+    byIds: {}
 };
 
-export default function(state = initialState, action) {
-  switch (action.type) {
-    case ADD_TODO: {
-      const {todo} = action.payload;
-      return {
-        ...state,
-        all: [...state.all, {...todo,completed: false}],
-        byIds: {
-          ...state.byIds,
-          [todo.id]: {
-            ...todo,
-            completed: false
-          }
+export default function (state = initialState, action) {
+    switch (action.type) {
+        case LOAD_TODOS: {
+            const {todos} = action.payload;
+            return {
+                ...state,
+                all: todos,
+            };
         }
-      };
-    }
-    case TOGGLE_TODO: {
-      const { id } = action.payload;
-      return {
-        ...state,
-        byIds: {
-          ...state.byIds,
-          [id]: {
-            ...state.byIds[id],
-            completed: !state.byIds[id].completed
-          }
+        case ADD_TODO: {
+            const {todo} = action.payload;
+            const {all} = state;
+            return {
+                ...state,
+                all: [...all, {...todo, completed: false}],
+            };
         }
-      };
+        case TOGGLE_TODO: {
+            const {id} = action.payload;
+            return {
+                ...state,
+                all: state.all.map((todo) => {
+                    if (todo.id === id) todo.completed = !todo.completed;
+                    return todo;
+                })
+            };
+        }
+        case DELETE_TODO: {
+            const {id} = action.payload;
+            return {
+                ...state,
+                all: state.all.filter((todo) => todo.id !== id)
+            };
+        }
+
+
+        default:
+            return state;
     }
-    default:
-      return state;
-  }
 }

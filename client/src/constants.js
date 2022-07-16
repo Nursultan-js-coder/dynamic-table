@@ -1,11 +1,6 @@
 export const VISIBILITY_FILTERS = {
-  ALL: "all",
-  COMPLETED: "completed",
-  INCOMPLETE: "incomplete"
+    ALL: "all",
+    COMPLETED: "completed",
+    NOT_COMPLETED: "not_completed",
 };
 
-export const VISIBILITY_SORT = {
-  USERNAME:"username",
-  EMAIL:"email",
-  STATUS:"status"
-}

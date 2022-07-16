@@ -1,17 +1,21 @@
-import { SET_FILTER } from "../actionTypes";
-import { VISIBILITY_FILTERS } from "../../constants";
+import {SET_FILTER} from "../actionTypes";
 
-const initialState = VISIBILITY_FILTERS.ALL;
+
+const initialState = {
+    filter: "all",
+    // field:null,
+    // order:"ASC"
+};
 
 const visibilityFilter = (state = initialState, action) => {
-  switch (action.type) {
-    case SET_FILTER: {
-      return action.payload.filter;
+    switch (action.type) {
+        case SET_FILTER: {
+            return {...state, filter: action.payload.filter};
+        }
+        default: {
+            return state;
+        }
     }
-    default: {
-      return state;
-    }
-  }
 };
 
 export default visibilityFilter;

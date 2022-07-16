@@ -1,9 +1,11 @@
-import {useMemo} from "react";
 import {connect} from "react-redux";
-import {getTodosByVisibilityFilter} from "../redux/selectors";
-import {Appear, Link, Table, withStyles,} from "arwes";
-
+import {getTodosBySort, getTodosByVisibilityFilter} from "../redux/selectors";
+import {Appear, Table, withStyles,} from "arwes";
+import {deleteTodo, setFilter, setSort, toggleTodo} from "../redux/actions";
 import Clickable from "./Clickable";
+import Link from "arwes/lib/Link";
+import {useEffect, useState} from "react";
+import Words from "arwes/lib/Words";
 
 const styles = () => ({
     link: {
@@ -18,40 +20,49 @@ const TodoList = props => {
         todos,
         classes,
         toggleTodo,
+        deleteTodo
     } = props;
-    const tableBody = useMemo(() => {
+
+
+    const onDeleteTodo = (todo) => {
+        deleteTodo(todo.id);
+    }
+
+    const ontToggleTodo = (todo) => {
+        toggleTodo(todo.id);
+    }
+
+    const tableBody = () => {
         return todos
             .map((todo, index) => {
-                return <tr key={String(todo.id)}>
+                return <tr key={index} onDoubleClick={()=>ontToggleTodo(todo)}>
+                    <td>{index}</td>
+                    {Object.keys(todo).map((key, index) => <td><Words>{JSON.stringify(todo[key])}</Words></td>)}
                     <td>
                         <Clickable style={{color: "red"}}>
-                            <Link className={classes.link} onClick={() => toggleTodo(todo)}>
+                            <Link className={classes.link} onClick={() => onDeleteTodo(todo)}>
                                 ✖
                             </Link>
                         </Clickable>
                     </td>
-                    <td>{index}</td>
-                    <td>{todo.user.username}</td>
-                    <td>{todo.user.email}</td>
-                    <td>{todo.body}</td>
                 </tr>;
             });
-    }, [todos, toggleTodo, classes.link]);
+    }
 
     return <Appear id="todolist" animate show={entered}>
+        <p>click on column header to sort the table</p>
         <Table animate show={entered}>
             <table>
                 <thead>
                 <tr>
-                    <th></th>
                     <th>No.</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Todo</th>
+                    {todos.length && Object.keys(todos[0]).map((key, index) => <td
+                        onClick={() => props.setSort({field: key})}>{key.toUpperCase()}</td>)}
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                {tableBody}
+                {tableBody()}
                 </tbody>
             </table>
         </Table>
@@ -59,9 +70,10 @@ const TodoList = props => {
 }
 
 const mapStateToProps = state => {
-    const {visibilityFilter} = state;
-    const todos = getTodosByVisibilityFilter(state, visibilityFilter);
+    const {visibilityFilter, visibilitySort} = state;
+    const filteredTodos = getTodosByVisibilityFilter(state, visibilityFilter);
+    const todos = getTodosBySort(filteredTodos, visibilitySort)
     return {todos};
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(TodoList));
+export default connect(mapStateToProps, {setFilter, setSort, deleteTodo, toggleTodo})(withStyles(styles)(TodoList));

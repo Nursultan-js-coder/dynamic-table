@@ -1,43 +1,28 @@
-import {Appear, Button, Loading, Paragraph} from "arwes";
-import Clickable from "./Clickable";
+import {Appear, Loading, Words} from "arwes";
 import {connect} from "react-redux";
-import {addTodo} from "../redux/actions";
-import {useState} from "react";
+import {addTodo, loadTodos} from "../redux/actions";
 
 const Form = props => {
+    const {loadTodos} = props;
 
-    const {addTodo} = props;
-    const [todo, setTodo] = useState('');
-    const onAddTodo = (e) => {
-        e.preventDefault();
-        addTodo({
-            body: todo,
-            user: {
-                username: "Nurs",
-                email: "nurstunguch@gmail.com"
-            }
-        });
-        setTodo('')
+    const showFile = async (event) => {
+        event.preventDefault()
+        const reader = new FileReader();
+        reader.onload = onReaderLoad;
+        reader.readAsText(event.target.files[0]);
+    }
+
+    function onReaderLoad(event) {
+        const todos = JSON.parse(event.target.result);
+        loadTodos(todos);
     }
 
     return <Appear id="launch" animate show={props.entered}>
-        <Paragraph>Enter todo to be completed today.</Paragraph>
-        <form onSubmit={onAddTodo}
+        <Words>Select file that i've attached to this app or file with json format like that.</Words>
+        <form onSubmit={showFile}
               style={{display: "inline-grid", gridTemplateColumns: "1fr 3fr", gridGap: "10px 20px", width: '100%'}}>
-            <label htmlFor="mission-name">Todo body</label>
-            <input value={todo}
-                   onChange={(e) => setTodo(e.target.value)}
-                   type="text" id="mission-name"
-                   name="mission-name" style={{width: '100%'}}/>
-            <Clickable>
-                <Button animate
-                        show={props.entered}
-                        type="submit"
-                        layer="success"
-                        disabled={props.isPendingLaunch}>
-                    Launch Todo ✔
-                </Button>
-            </Clickable>
+            <label htmlFor="mission-name">select file</label>
+            <input type="file" onChange={(e) => showFile(e)}/>
             {props.isPendingLaunch &&
             <Loading animate small/>
             }
@@ -47,5 +32,5 @@ const Form = props => {
 
 export default connect(
     null,
-    {addTodo}
+    {addTodo, loadTodos}
 )(Form);
